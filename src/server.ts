@@ -67,8 +67,41 @@ app.get("/users/:id", (req, res) => {
 
 });
 
+const posts: post[] = [];
+
+app.post("/posts", (req, res) => {
+
+    const { title, content, authorId } = req.body;
+
+    if (typeof title !== 'string') {
+        return res.status(400).json({ error: 'Título não pode ser apenas números, deve ser compostos com caracteres.' });
+    }
+    if (title.length < 3) {
+        return res.status(400).json({ error: 'Título deve ter pelo menos 3 caracteres.' });
+    }
+
+    if (typeof content !== 'string' || content.length < 10) {
+        return res.status(400).json({ error: 'Conteúdo deve ter pelo menos 10 caracteres.' });
+    }
+    if (!users.some(user => user.id === authorId)) {
+        return res.status(400).json({ error: 'Autor não existe.' });
+    }
+
+    if (!title || !content || !authorId) {
+        return res.status(400).send("Dados incompletos");
+    }   
+    const newPost: post = {
+        id: Date.now(),
+        title,          
+        content,
+        authorId,
+        createdAt: new Date(),
+        published: false,
+    };
 
 
+    return res.status(201).json(newPost);
+});
 
 
 app.listen(3003, () => {
