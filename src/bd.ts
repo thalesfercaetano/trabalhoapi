@@ -1,4 +1,4 @@
-export let users = [
+/*export let users = [
 
     { id: 1, name: "Flávio", email: "flavio@flavio.com", senha: "flavio", age: 25, role: "admin" },
     { id: 2, name: "Thales", email: "thales@teste.com", senha: "thales123", age: 22, role: "user" },
@@ -21,3 +21,4 @@ export type post = {
     published: boolean,
 
 };  
+*/

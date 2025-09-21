@@ -32,7 +32,7 @@ let users: users[] = [
     { id: 2, name: "Thales", email: "thales@teste.com", senha: "thales123", age: 22, role: "user" },
     { id: 3, name: "Mariana", email: "mariana@teste.com", senha: "mari2025", age: 28, role: "user" },
     { id: 4, name: "João", email: "joao@teste.com", senha: "joao321", age: 30, role: "user" },
-    { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27, role: "moderator" },
+    { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27, role: "user" },
     { id: 6, name: "Lucas", email: "lucas@teste.com", senha: "lucas789", age: 24, role: "user" }
 ];
 
@@ -205,6 +205,35 @@ app.patch("/posts/:id", (req, res) => {
     return res.json(postVerify);
 
 });
+
+
+//questao 6
+
+app.delete("/posts/:id", (req, res) => {
+
+     const postId = parseInt(req.params.id);
+     const userId =parseInt(req.headers['user-id'] as string);
+
+
+     const postVerify = posts.find(p => p.id === postId);
+
+    if(!postId){
+        return res.status(400).send("ID inválido");
+     }
+
+     if(!postVerify){
+        return res.status(404).send("Post não encontrado");
+     }
+
+     if(postVerify.authorId !== userId && users.find(u => u.id === userId)?.role !== "admin"){
+        return res.status(403).send("Apenas o autor ou um admin podem deletar esse post");
+     }
+
+    posts = posts.filter(p => p.id !== postId);
+    return res.status(200).json({ message: "Post foi deletado com sucesso"});
+
+});
+
 
 
 
