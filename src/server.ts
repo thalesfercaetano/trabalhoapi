@@ -51,7 +51,6 @@ type post  = {
 let posts: post[] = [];
 
 //questao 2
-
 app.get("/users/age-range", (req, res) => {
     const minAge = parseInt(req.query.min as string);
     const maxAge = parseInt(req.query.max as string);
@@ -66,7 +65,6 @@ app.get("/users/age-range", (req, res) => {
 });
 
 //questao 1
-
 app.get("/users/:id", (req, res) => {
 
     const userId = parseInt(req.params.id);
@@ -82,8 +80,6 @@ app.get("/users/:id", (req, res) => {
 });
 
 //questao 3
-
-
 app.post("/posts", (req, res) => {
 
     const { title, content, authorId } = req.body;
@@ -122,7 +118,6 @@ app.post("/posts", (req, res) => {
 });
 
 //questao 4
-
 app.put("/users/:id", (req, res) => {
 
     const { name, email, senha, age, role} = req.body;
@@ -157,7 +152,6 @@ app.put("/users/:id", (req, res) => {
 });
 
 //questao 5
-
 app.patch("/posts/:id", (req, res) => {
 
     const { title, content, published} = req.body;
@@ -211,7 +205,6 @@ app.patch("/posts/:id", (req, res) => {
 
 
 //questao 6
-
 app.delete("/posts/:id", (req, res) => {
 
      const postId = parseInt(req.params.id);
