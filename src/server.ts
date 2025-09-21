@@ -253,7 +253,8 @@ app.delete("/users/cleanup-inactive", (req, res) => {
 
     users = users.filter( user => !usersToRemove.includes(user));
 
-    return res.status(200).json({ message: `${usersToRemove.length} usuários foram removidos.`});
+    return res.status(200).json(usersToRemove);
+    
 });
 
 
