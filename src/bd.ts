@@ -9,9 +9,10 @@ export let users = [
 
 ];
 
+export const posts: post[] = [];
 
 export type post = {    
-    
+
     id: number,
     title: string,
     content: string,
@@ -19,4 +20,4 @@ export type post = {
     createdAt: Date,
     published: boolean,
 
-};
+};  

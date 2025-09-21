@@ -11,6 +11,12 @@ app.get("/", (req, res) => {
   res.send("Tafunfando");
 });
 
+app.get("/posts", (req, res) => {
+    return res.json(posts);
+});
+
+//BD
+
 type users = {
     id: number;
     name: string;
@@ -29,6 +35,7 @@ let users: users[] = [
     { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27, role: "moderator" },
     { id: 6, name: "Lucas", email: "lucas@teste.com", senha: "lucas789", age: 24, role: "user" }
 ];
+
 
 type post  = {    
     id: number,
@@ -72,7 +79,7 @@ app.get("/users/:id", (req, res) => {
 });
 
 //questao 3
-const posts: post[] = [];
+let posts: post[] = [];
 
 app.post("/posts", (req, res) => {
 
@@ -105,6 +112,7 @@ app.post("/posts", (req, res) => {
         published: false,
     };
 
+    posts.push(newPost);
 
     return res.status(201).json(newPost);
 
@@ -127,15 +135,78 @@ app.put("/users/:id", (req, res) => {
         return res.status(404).send("Usuário não encontrado");
     }
 
-   user.name = name;
-   user.email = email;
-   user.senha = senha;
-   user.age = age;
-   user.role = role;
+    if (!name || !email || !role || !age || !senha) {
+        return res.status(400).json({ error: 'Todos os campos devem ser fornecidos.' });
+    }
 
-   return res.json(user);
+    if (users.some(user => user.email === email && user.id !== userId)) {
+        return res.status(409).json({ error: 'Conflito de email: já existe um usuário com esse email.' });
+    }
+
+    user.name = name;
+    user.email = email;
+    user.senha = senha;
+    user.age = age;
+    user.role = role;
+
+    return res.json(user);
 
 });
+
+//questao 5
+
+app.patch("/posts/:id", (req, res) => {
+
+    const { title, content, published} = req.body;
+    const postId = parseInt(req.params.id);
+
+    const postVerify = posts.find(p => p.id === postId)
+
+    if(!postId){
+        return res.status(400).send("ID inválido");
+    }
+
+    console.log("essa bomba de id ta registrando?" + postId);
+
+    if(!postVerify){
+            return res.status(404).send("Post não encontrado");
+    }
+
+
+    if(req.body.id !== undefined || req.body.authorId !== undefined || req.body.createdAt !== undefined){
+
+        return res.status(400).json({ error: 'Não é possível atualizar os campos id, authorId ou createdAt.' });
+
+    }
+
+    if (title !== undefined) {
+        if (typeof title !== 'string' || title.length < 3) {
+            return res.status(400).json({ error: 'Título deve ter pelo menos 3 caracteres.' });
+        }
+
+    postVerify.title = title;
+
+    }
+
+    if (content !== undefined) {
+        if (typeof content !== 'string' || content.length < 10) {
+            return res.status(400).json({ error: 'Conteúdo deve ter pelo menos 10 caracteres.' });
+        }
+        postVerify.content = content;
+    }
+
+    if (published !== undefined) {
+        if (typeof published !== 'boolean') {
+            return res.status(400).json({ error: 'O campo published deve ser booleano.' });
+        }   
+        postVerify.published = published;
+    }
+
+    return res.json(postVerify);
+
+});
+
+
 
 app.listen(3003, () => {
   console.log("Servidor rodando na porta 3003");
