@@ -17,17 +17,17 @@ type users = {
     email: string;
     senha: string;
     age: number;
+    role: string;
 }
 
-const users: users[] = [
+let users: users[] = [
 
-    { id: 1, name: "Flávio", email: "flavio@flavio.com", senha: "flavio", age: 25 },
-    { id: 2, name: "Thales", email: "thales@teste.com", senha: "thales123", age: 22 },
-    { id: 3, name: "Mariana", email: "mariana@teste.com", senha: "mari2025", age: 28 },
-    { id: 4, name: "João", email: "joao@teste.com", senha: "joao321", age: 30 },
-    { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27 },
-    { id: 6, name: "Lucas", email: "lucas@teste.com", senha: "lucas789", age: 24 }
-
+    { id: 1, name: "Flávio", email: "flavio@flavio.com", senha: "flavio", age: 25, role: "admin" },
+    { id: 2, name: "Thales", email: "thales@teste.com", senha: "thales123", age: 22, role: "user" },
+    { id: 3, name: "Mariana", email: "mariana@teste.com", senha: "mari2025", age: 28, role: "user" },
+    { id: 4, name: "João", email: "joao@teste.com", senha: "joao321", age: 30, role: "user" },
+    { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27, role: "moderator" },
+    { id: 6, name: "Lucas", email: "lucas@teste.com", senha: "lucas789", age: 24, role: "user" }
 ];
 
 type post  = {    
@@ -39,6 +39,8 @@ type post  = {
     published: boolean,
 
 };
+
+//questao 2
 
 app.get("/users/age-range", (req, res) => {
     const minAge = parseInt(req.query.min as string);
@@ -52,6 +54,8 @@ app.get("/users/age-range", (req, res) => {
     return res.json(filteredUsers);
 
 });
+
+//questao 1
 
 app.get("/users/:id", (req, res) => {
 
@@ -67,6 +71,7 @@ app.get("/users/:id", (req, res) => {
 
 });
 
+//questao 3
 const posts: post[] = [];
 
 app.post("/posts", (req, res) => {
@@ -90,6 +95,7 @@ app.post("/posts", (req, res) => {
     if (!title || !content || !authorId) {
         return res.status(400).send("Dados incompletos");
     }   
+
     const newPost: post = {
         id: Date.now(),
         title,          
@@ -101,8 +107,35 @@ app.post("/posts", (req, res) => {
 
 
     return res.status(201).json(newPost);
+
 });
 
+//questao 4
+
+app.put("/users/:id", (req, res) => {
+
+    const { name, email, senha, age, role} = req.body;
+    const userId = parseInt(req.params.id);
+    
+    if(!userId){
+        return res.status(400).send("ID inválido");
+    }
+
+    const user = users.find(u => u.id === userId);
+
+    if(!user){
+        return res.status(404).send("Usuário não encontrado");
+    }
+
+   user.name = name;
+   user.email = email;
+   user.senha = senha;
+   user.age = age;
+   user.role = role;
+
+   return res.json(user);
+
+});
 
 app.listen(3003, () => {
   console.log("Servidor rodando na porta 3003");
