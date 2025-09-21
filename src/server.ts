@@ -34,6 +34,7 @@ let users: users[] = [
     { id: 4, name: "João", email: "joao@teste.com", senha: "joao321", age: 30, role: "user" },
     { id: 5, name: "Carla", email: "carla@teste.com", senha: "carla456", age: 27, role: "user" },
     { id: 6, name: "Lucas", email: "lucas@teste.com", senha: "lucas789", age: 24, role: "user" }
+
 ];
 
 
@@ -46,6 +47,8 @@ type post  = {
     published: boolean,
 
 };
+
+let posts: post[] = [];
 
 //questao 2
 
@@ -79,7 +82,7 @@ app.get("/users/:id", (req, res) => {
 });
 
 //questao 3
-let posts: post[] = [];
+
 
 app.post("/posts", (req, res) => {
 
@@ -234,7 +237,23 @@ app.delete("/posts/:id", (req, res) => {
 
 });
 
+app.delete("/users/cleanup-inactive", (req, res) => {
 
+    const confirm = req.query.confirm;
+
+    if(confirm !== 'true'){
+        return res.status(400).send("Para confirmar a limpeza, envie 'true' no parâmetro de consulta 'confirm'");
+    }   
+
+    const usersToRemove = users.filter( user => {
+        const hasPosts = posts.some( post => post.authorId === user.id);
+        return !hasPosts && user.role !== "admin";
+    })
+
+    users = users.filter( user => !usersToRemove.includes(user));
+
+    return res.status(200).json({ message: `${usersToRemove.length} usuários foram removidos.`});
+});
 
 
 app.listen(3003, () => {
