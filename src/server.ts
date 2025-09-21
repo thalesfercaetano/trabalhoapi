@@ -237,6 +237,7 @@ app.delete("/posts/:id", (req, res) => {
 
 });
 
+//questao 7
 app.delete("/users/cleanup-inactive", (req, res) => {
 
     const confirm = req.query.confirm;
